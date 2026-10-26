@@ -40,7 +40,7 @@ video.addEventListener('seeked',()=>{if(!still)renderVideo(video.currentTime);})
 video.addEventListener('play',()=>{$('play').textContent='Ⅱ 暂停';});
 video.addEventListener('pause',()=>{$('play').textContent='▶ 播放';});
 video.addEventListener('ended',()=>{$('play').textContent='↻ 重播';});
-video.addEventListener('error',()=>{$('mode').textContent='视频无法加载。请保留 assets 文件夹，或使用附带的本地启动器打开。';$('play').disabled=true;});
+video.addEventListener('error',()=>{$('mode').textContent='视频无法加载。请保留 assets 文件夹，或使用附带的本地启动器打开。';$('play').disabled=true;$('start').disabled=true;});
 function clearStill(){still=null;stillIndex=null;$('mode').textContent='网页压缩预览 · CRF 22 · 精细比较请选无损关键帧';document.querySelectorAll('#keyframes .active').forEach(b=>b.classList.remove('active'));}
 function seek(i){generation++;video.pause();clearStill();i=Math.max(0,Math.min(current.frames-1,i));updateStatus(i);video.currentTime=current.timestamps[i]+0.0005;}
 async function showStill(sample){
@@ -59,7 +59,7 @@ function saveReview(){
 }
 function loadReview(){const r=reviews[current.key]||{};for(const id of ['coverage','preferred','notes'])$(id).value=r[id]||'';$('saved-status').textContent=r.updated_at?'已载入此视角的观察记录':'未填写';}
 function select(session,cam='hand_right'){
-  generation++;video.pause();clearStill();$('play').textContent='▶ 播放';current=data.streams.find(s=>s.session===session&&s.camera===cam);updateStatus(0);$('play').disabled=true;
+  generation++;video.pause();clearStill();$('play').textContent='▶ 播放';current=data.streams.find(s=>s.session===session&&s.camera===cam);updateStatus(0);$('play').disabled=true;$('start').disabled=true;
   document.querySelectorAll('.episode').forEach(b=>b.classList.toggle('active',b.dataset.session===session));
   document.querySelectorAll('#cameras button').forEach(b=>b.classList.toggle('active',b.dataset.cam===cam));
   const isRight=cam==='hand_right';
@@ -92,7 +92,7 @@ function select(session,cam='hand_right'){
   loadReview();
   video.src=current.atlas;video.playbackRate=Number($('rate').value);video.load();
   const key=current.key;
-  video.onloadeddata=()=>{if(current.key!==key)return;$('play').disabled=false;showStill(current.samples[current.default_sample_index??4]);};
+  video.onloadeddata=()=>{if(current.key!==key)return;$('play').disabled=false;$('start').disabled=false;showStill(current.samples[current.default_sample_index??4]);};
 }
 sessions.forEach((s,i)=>{const b=document.createElement('button');b.className='episode';b.dataset.session=s.session;b.innerHTML=`<span class="num">0${i+1}</span><span><b>${name(s.task)}</b><small>${s.session} · ${s.last_frame_time.toFixed(1)}s</small></span>`;b.addEventListener('click',()=>select(s.session,current.camera));$('episodes').append(b);});
 definitions.forEach(([id,title,desc,foot],i)=>{const card=document.createElement('article');card.className='tile';card.innerHTML=`<div class="tile-head"><b>0${i+1}</b>${title}</div><div class="tile-desc">${desc}</div><div class="tile-canvas-wrap"><canvas id="canvas-${id}" width="224" height="224" aria-label="${title}后的224乘224画面"></canvas></div><div class="tile-foot"><span>${foot}</span><a id="download-${id}" download>下载 MP4 ↗</a></div>`;$('tiles').append(card);});
