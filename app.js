@@ -12,7 +12,7 @@ const definitions = [
 ];
 let current, index=0, generation=0, still=null, stillIndex=null, displayedMediaTime=0;
 const sessions=[...new Map(data.streams.map(s=>[s.session,s])).values()].sort((a,b)=>b.task.localeCompare(a.task)||a.session.localeCompare(b.session));
-const name = task => task==='task3'?'验电笔点位操作':'柜门 · 旋钮 · 按钮';
+const name = task => '验电笔点位操作';
 const storageKey='southgrid-wrist-review-v1';
 let reviews={};try{reviews=JSON.parse(localStorage.getItem(storageKey)||'{}');}catch{}
 const fmt = seconds => {const ms=Math.round(seconds*1000);return `${String(Math.floor(ms/60000)).padStart(2,'0')}:${String(Math.floor(ms/1000)%60).padStart(2,'0')}.${String(ms%1000).padStart(3,'0')}`;};
@@ -62,12 +62,17 @@ function select(session,cam='hand_right'){
   generation++;video.pause();clearStill();$('play').textContent='▶ 播放';current=data.streams.find(s=>s.session===session&&s.camera===cam);updateStatus(0);$('play').disabled=true;
   document.querySelectorAll('.episode').forEach(b=>b.classList.toggle('active',b.dataset.session===session));
   document.querySelectorAll('#cameras button').forEach(b=>b.classList.toggle('active',b.dataset.cam===cam));
-  const isProbe=current.task==='task3',isRight=cam==='hand_right';
+  const isRight=cam==='hand_right';
   $('record-title').textContent=name(current.task)+' / '+(isRight?'右腕视角':'左腕视角');
   $('record-meta').textContent=`${session} · ${current.frames.toLocaleString()} 帧 · ${current.last_frame_time.toFixed(2)} 秒 · 640×480 → 224×224`;
-  $('scene-note').textContent=isProbe?(isRight?'先看拿取和归位，再检查上方端子附近的笔尖；中心裁切可能留下笔身，却裁掉笔尖。':'侧面视角能补充笔尖与端子的相对位置。请检查遮挡、反光，以及动作中目标是否离开固定裁切框。'):'这是不同操作任务的对照样本：关注手指、把手、旋钮与按钮。不要把本任务的结果直接当作验电接触证据。';
-  $('finding-title').textContent=isProbe&&isRight?'笔尖不一定在中心':isProbe?'侧面视角补充接触位置':'细节与完整视野的取舍';
-  $('finding').textContent=isProbe&&isRight?'预览关键帧中，笔尖和端子位于画面上方。中心裁切可能截掉接触区域；向上偏移能保留它，但拿取和归位时仍需检查覆盖。':isProbe?'中心与偏移框都可能容纳侧面接触区域。比较是否能同时看见笔尖、目标端子和两者之间的间隙。':'局部裁切保留更大的物体像素，但完整动作包含开门、操作与关门，目标会在腕部画面中移动。';
+  $('scene-note').textContent=isRight?'先看拿取和归位，再检查上方端子附近的笔尖；中心裁切可能留下笔身，却裁掉笔尖。':'侧面视角能补充笔尖与端子的相对位置。请检查遮挡、反光，以及动作中目标是否离开固定裁切框。';
+  $('finding-title').textContent=isRight?'笔尖不一定在中心':'侧面视角补充接触位置';
+  $('finding').textContent=isRight?'预览关键帧中，笔尖和端子位于画面上方。中心裁切可能截掉接触区域；向上偏移能保留它，但拿取和归位时仍需检查覆盖。':'中心与偏移框都可能容纳侧面接触区域。比较是否能同时看见笔尖、目标端子和两者之间的间隙。';
+  if(current.session==='20261020_195440'&&isRight){
+    $('finding-title').textContent='固定偏移也有边界';
+    $('finding').textContent='这条录制的操作位置较低。示例关键帧中，笔尖接近向上偏移框的下边缘，中心裁切也能保留操作区域。请检查完整过程，比较哪种范围更稳妥。';
+    $('scene-note').textContent='注意约 48.7 秒：不要只看局部像素是否更大，也要检查笔尖与端子离裁切边界还有多少余量。';
+  }
   $('roi-coord').textContent=`(${current.boxes.offset[0]}, ${current.boxes.offset[1]})`;
   $('timeline').max=current.frames-1;
   $('keyframes').replaceChildren();
@@ -82,12 +87,12 @@ function select(session,cam='hand_right'){
     `头部匹配最大时间差 ${current.head_max_delta_ms.toFixed(2)} ms；五种腕部输出采用同一原始帧与同一时间戳。`,
     `输出校验：5 个 224×224 视频及 1 个同步预览视频均逐帧解码，帧数与原始腕部记录一致。`,
     `“完整”指源录制中全部已记录图像从头到尾保留，并非断言采集阶段从未掉帧。`,
-    `本网页仅保留任务与录制编号；绝对服务器路径已移除。`
+    `四条录制均为任务 3；本网页仅保留任务与录制编号，绝对服务器路径已移除。`
   ]){const p=document.createElement('p');p.textContent=line;$('audit').append(p);}
   loadReview();
   video.src=current.atlas;video.playbackRate=Number($('rate').value);video.load();
   const key=current.key;
-  video.onloadeddata=()=>{if(current.key!==key)return;$('play').disabled=false;showStill(current.samples[4]);};
+  video.onloadeddata=()=>{if(current.key!==key)return;$('play').disabled=false;showStill(current.samples[current.default_sample_index??4]);};
 }
 sessions.forEach((s,i)=>{const b=document.createElement('button');b.className='episode';b.dataset.session=s.session;b.innerHTML=`<span class="num">0${i+1}</span><span><b>${name(s.task)}</b><small>${s.session} · ${s.last_frame_time.toFixed(1)}s</small></span>`;b.addEventListener('click',()=>select(s.session,current.camera));$('episodes').append(b);});
 definitions.forEach(([id,title,desc,foot],i)=>{const card=document.createElement('article');card.className='tile';card.innerHTML=`<div class="tile-head"><b>0${i+1}</b>${title}</div><div class="tile-desc">${desc}</div><div class="tile-canvas-wrap"><canvas id="canvas-${id}" width="224" height="224" aria-label="${title}后的224乘224画面"></canvas></div><div class="tile-foot"><span>${foot}</span><a id="download-${id}" download>下载 MP4 ↗</a></div>`;$('tiles').append(card);});

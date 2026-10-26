@@ -1,46 +1,20 @@
 {
+  "scope": "task3_only",
   "recordings": 4,
+  "sessions": [
+    "20261020_191945",
+    "20261020_195440",
+    "20261020_205046",
+    "20261020_213143"
+  ],
   "wrist_streams": 8,
-  "wrist_frames": 11996,
+  "wrist_frames": 13900,
   "processed_224_videos": 40,
   "atlas_videos": 8,
   "lossless_keyframes": 72,
   "source_rgb_and_native_crop_pixel_equality": "PASS",
-  "source_images_decoded": 23992,
-  "source_archive_sha256": "2315fb932ee87d432d103b4a8a3d6cf1e8f0098aab817c93e100c1a2c0fd5584",
+  "source_images_decoded": 27800,
   "streams": [
-    {
-      "key": "task2_20261020_190101_hand_left",
-      "frames": 1129,
-      "duration": 37.608005,
-      "source_counter_gaps": 0,
-      "max_interval_ms": 33.34307670593262,
-      "head_delta_ms": 29.94990348815918
-    },
-    {
-      "key": "task2_20261020_190101_hand_right",
-      "frames": 1129,
-      "duration": 37.608147,
-      "source_counter_gaps": 0,
-      "max_interval_ms": 33.34188461303711,
-      "head_delta_ms": 30.076265335083008
-    },
-    {
-      "key": "task2_20261020_190431_hand_left",
-      "frames": 1524,
-      "duration": 50.777053,
-      "source_counter_gaps": 0,
-      "max_interval_ms": 33.39099884033203,
-      "head_delta_ms": 48.577070236206055
-    },
-    {
-      "key": "task2_20261020_190431_hand_right",
-      "frames": 1524,
-      "duration": 50.811084,
-      "source_counter_gaps": 1,
-      "max_interval_ms": 66.6801929473877,
-      "head_delta_ms": 43.03693771362305
-    },
     {
       "key": "task3_20261020_191945_hand_left",
       "frames": 1650,
@@ -58,6 +32,22 @@
       "head_delta_ms": 41.69774055480957
     },
     {
+      "key": "task3_20261020_195440_hand_left",
+      "frames": 1947,
+      "duration": 64.913761,
+      "source_counter_gaps": 1,
+      "max_interval_ms": 66.67971611022949,
+      "head_delta_ms": 34.08360481262207
+    },
+    {
+      "key": "task3_20261020_195440_hand_right",
+      "frames": 1947,
+      "duration": 64.880735,
+      "source_counter_gaps": 0,
+      "max_interval_ms": 33.34689140319824,
+      "head_delta_ms": 41.0456657409668
+    },
+    {
       "key": "task3_20261020_205046_hand_left",
       "frames": 1695,
       "duration": 56.478727,
@@ -72,6 +62,22 @@
       "source_counter_gaps": 1,
       "max_interval_ms": 66.6806697845459,
       "head_delta_ms": 37.81700134277344
+    },
+    {
+      "key": "task3_20261020_213143_hand_left",
+      "frames": 1658,
+      "duration": 55.278433,
+      "source_counter_gaps": 1,
+      "max_interval_ms": 66.6811466217041,
+      "head_delta_ms": 33.61201286315918
+    },
+    {
+      "key": "task3_20261020_213143_hand_right",
+      "frames": 1658,
+      "duration": 55.245281,
+      "source_counter_gaps": 0,
+      "max_interval_ms": 33.34808349609375,
+      "head_delta_ms": 32.41467475891113
     }
   ]
 }
