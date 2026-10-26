@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>腕部视角 · 224 像素实验</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><a class="brand" href="#">◈ SOUTHGRID <span>视觉数据研究</span></a><span class="scope"><i></i> 离线处理 · 未进行模型训练</span></header>
+<main>
+<section class="intro"><div><div class="eyebrow">WRIST VIEW STUDY / 01</div><h1>224 像素，能留下多少接触细节？</h1><p>用完整动作过程，比较缩放与裁切。先看笔尖和目标是否都在画面内，再判断接触是否更容易辨认。</p></div><div class="stats"><div><b>04</b><span>完整录制</span></div><div><b>08</b><span>左右腕视角</span></div><div><b>05</b><span>处理方式</span></div></div></section>
+<div class="section-label"><span>01 / 选择录制</span><span>两个任务各 2 条 · 默认打开验电任务</span></div>
+<nav id="episodes" aria-label="录制选择"></nav>
+<section class="workspace">
+<div class="workspace-top"><div><h2 id="record-title">正在载入数据…</h2><p id="record-meta"></p></div><div class="segmented" id="cameras"><button data-cam="hand_right" class="active">右腕</button><button data-cam="hand_left">左腕</button></div></div>
+<div class="source-grid">
+<div class="source-panel"><div class="panel-heading"><span>原始腕部视野 <small>640 × 480</small></span><label><input type="checkbox" id="boxes" checked> 显示裁切框</label></div><canvas id="source" width="640" height="480" aria-label="原始腕部画面与裁切范围"></canvas><div class="legend"><span><i class="center"></i>中心 224</span><span><i class="offset"></i>偏移 224</span><span><i class="context"></i>中心 448</span></div></div>
+<div class="head-panel"><div class="panel-heading">头部视角 <small>用于理解动作上下文</small></div><canvas id="head" width="640" height="480" aria-label="头部上下文画面"></canvas><p>按时间戳匹配最近头部帧；五种腕部处理结果始终来自同一帧。</p><div class="scene-note"><span class="eyebrow">观察提示</span><p id="scene-note"></p></div></div>
+<aside><div class="eyebrow">本组对比的关键</div><h3 id="finding-title"></h3><p id="finding"></p><dl><div><dt>224 原像素裁切保留</dt><dd>16.3% <small>原始面积</small></dd></div><div><dt>相对等比缩放的局部线性尺度</dt><dd>2.86× <small>不是新增细节</small></dd></div><div><dt>固定偏移框 <small>左上角 x, y</small></dt><dd id="roi-coord"></dd></div></dl><p class="caution">更清晰不等于已确认物理接触或验电成功；裁切也无法恢复原本被遮挡、过曝或模糊的内容。</p></aside>
+</div>
+<div class="transport"><button id="play" class="primary" disabled>▶ 播放</button><button id="start">从头播放</button><button id="prev" aria-label="上一帧">← 上一帧</button><button id="next" aria-label="下一帧">下一帧 →</button><label class="rate-label">速度 <select id="rate"><option value=".25">0.25×</option><option value=".5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label><output id="time">00:00.000 / 00:00.000</output><span id="frame-count"></span></div>
+<input id="timeline" type="range" min="0" max="1" value="0" step="1" aria-label="逐帧时间轴">
+<div class="timeline-foot"><span id="mode">网页压缩预览 · CRF 22</span><span>快捷键：空格播放 / 暂停，← → 逐帧</span></div>
+<div class="keyframe-row"><span>无损关键帧</span><div id="keyframes"></div><span class="hint">点击查看编码前的原像素对比</span></div>
+</section>
+<section class="comparisons">
+<div class="section-label"><span>02 / 同一帧，五种 224 × 224 输入</span><div class="zoom"><span>显示大小</span><button data-zoom="1" class="active">1×</button><button data-zoom="2">2× 像素放大</button><button id="save-png">保存当前对比 PNG</button></div></div>
+<div class="comparison-scroll"><div id="tiles"></div></div><p class="small-note">1× 表示每个输出像素对应 1 个 CSS 像素（屏幕缩放仍由浏览器和系统决定）。2× 使用最近邻展示，不增加图像信息。所有输出均为 224×224，不做锐化或超分辨率。</p>
+</section>
+<section class="bottom-grid">
+<article class="review"><div class="section-label">03 / 留下你的目视判断</div><p>针对当前录制与腕部视角记录。仅保存在这台浏览器，也可导出。</p><div class="rating-grid"><label>中心裁切是否保留关键点？<select id="coverage"><option value="">待检查</option><option>全程保留</option><option>仅部分时段保留</option><option>接触阶段有裁出</option><option>无法判断</option></select></label><label>更适合观察接触的方式<select id="preferred"><option value="">待检查</option><option>直接缩放</option><option>等比缩放 + 补边</option><option>中心 224 裁切</option><option>固定偏移 224 裁切</option><option>中心 448 → 224</option><option>无法判断</option></select></label></div><label>观察备注<textarea id="notes" placeholder="例如：右腕 27.5 秒，中心裁切看不见笔尖，向上偏移后能看到笔尖与端子。"></textarea></label><div class="review-actions"><span id="saved-status">未填写</span><button id="export-review">导出观察记录 JSON</button></div></article>
+<article class="methodology"><div class="section-label">04 / 如何理解这次实验</div><p><strong>可支持的判断：</strong>哪种视野更便于人眼观察笔尖、端子与相对间隙，裁切是否丢失动作上下文。</p><p><strong>尚不能证明：</strong>π₀.₅ 学习效果、接触判定准确率或任务成功率。这里只进行数据处理。</p><p>固定偏移框由预览帧人工选定，同任务、同相机的两条录制共用同一框；不跟踪目标，也不随帧移动。本批样本用于探索，不是独立验证集。</p><details><summary>处理与完整性记录</summary><div id="audit"></div><p>缩放使用 Pillow 双线性插值。等比补边模拟当前工作区 OpenPI 的几何处理：640×480 → 224×168，上下各补 28 像素黑边；未核实你实际 π₀.₅ 部署中的完整预处理链。</p><p>网页同步预览另以 CRF 22 压缩，几何尺寸和时间戳不变。可下载的 224×224 视频仍为原有 CRF 12，无损 PNG 未修改。精细目视判断优先使用无损关键帧。录像使用原始 ROS 时间戳的相对时间（VFR），不做时间抽帧。源 JPEG 解码后进行变换，再以 H.264 / CRF 12 / yuv420p 编码；视频含有编码与色度采样误差，无损 PNG 关键帧保留编码前的 RGB 像素。</p><a href="manifest.json" download>下载处理清单与校验记录</a></details></article>
+</section>
+<footer><span>SOUTHGRID / 数据处理实验 · 2026-10-26</span><span>完整过程 · 固定裁切 · 可复现</span></footer>
+</main>
+<video id="atlas" preload="auto" muted playsinline aria-hidden="true"></video><script src="data.js"></script><script src="app.js"></script>
+</body></html>
