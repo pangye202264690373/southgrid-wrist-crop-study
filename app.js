@@ -59,7 +59,7 @@ function saveReview(){
 }
 function loadReview(){const r=reviews[current.key]||{};for(const id of ['coverage','preferred','notes'])$(id).value=r[id]||'';$('saved-status').textContent=r.updated_at?'已载入此视角的观察记录':'未填写';}
 function select(session,cam='hand_right'){
-  generation++;video.pause();clearStill();current=data.streams.find(s=>s.session===session&&s.camera===cam);updateStatus(0);$('play').disabled=true;
+  generation++;video.pause();clearStill();$('play').textContent='▶ 播放';current=data.streams.find(s=>s.session===session&&s.camera===cam);updateStatus(0);$('play').disabled=true;
   document.querySelectorAll('.episode').forEach(b=>b.classList.toggle('active',b.dataset.session===session));
   document.querySelectorAll('#cameras button').forEach(b=>b.classList.toggle('active',b.dataset.cam===cam));
   const isProbe=current.task==='task3',isRight=cam==='hand_right';
